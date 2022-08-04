@@ -1,0 +1,41 @@
+## Install Packages
+```{r install}
+install.packages("TTR")
+install.packages("xts")
+install.packages("zoo")
+install.packages("quantmod")
+```
+
+
+## Import Libraries
+```{r libraries}
+library(TTR)            # provides the most popular technical analysis functions for financial market data # nolint
+library(xts)            # provides an extensible time series class, enabling uniform handling of many R time series classes by extending zoo.ts # nolint
+library(zoo)            # aimed at irregular time series of numeric vectors/matrices, with a focus on financial time series # nolint
+library(quantmod)       # designed to assist the quantitative trader in the development, testing, and deployment of statistically based trading models # nolint
+```
+
+
+## Load Data
+```{r load_data}
+getSymbols("IBM", src="yahoo", from="2001-01-01", to="2018-01-01") # nolint
+ibm_data = data.frame(IBM[, 4])         # Selecting only closing prices # nolint
+head(ibm_data, n=15) # nolint
+```
+
+
+## Time Series Plot
+```{r time_series}
+bm = apply.monthly(ibm_data, FUN="mean")        # Coverting daily values to mean monthly values # nolint
+bm_ts = ts(bm$IBM.Close, start=c(2001, 1), end=c(2018, 1), frequency=12)           # Creating time series data # nolint
+plot(bm_ts) # nolint
+```
+
+
+## Decompose time series data
+```{r decompose}
+decompose(bm_ts)            # Decompose data and display results # nolint
+plot(stl(bm_ts, s.window="periodic"))       # Plot different components of time series # nolint
+```
+
+From the decomposed data, seasonality is constant over time and thus the best model is additive.
